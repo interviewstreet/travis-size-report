@@ -1,4 +1,13 @@
+branches:
+  - master
+notifications:
+  slack: hackerrank:UFH5hQpL74v4SyALVy3ykoBq
 language: node_js
-cache: npm
-script: npm run build
+node_js:
+  - '8'
+before_install:
+  - sudo pip install awscli
+script:
+  - npm run build
+  - yarn deploy
 after_success: node build/bin.js --config
