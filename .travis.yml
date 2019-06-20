@@ -8,6 +8,6 @@ node_js:
 before_install:
   - sudo pip install awscli
 script:
-  - npm run build
+  - yarn build
   - yarn deploy
 after_success: node build/bin.js --config
