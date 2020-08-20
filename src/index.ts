@@ -1,22 +1,19 @@
 import { promisify } from 'util';
 import { stat } from 'fs';
-import { URL, URLSearchParams } from 'url';
 
 import glob from 'glob';
 import gzipSize from 'gzip-size';
-import escapeRE from 'escape-string-regexp';
-import fetch, { Response } from 'node-fetch';
+import fetch from 'node-fetch';
 import prettyBytes from 'pretty-bytes';
 import { buildFindRenamedFunc, FindRenamed } from './find-renamed';
 
-const { TRAVIS_TOKEN, GITHUB_TOKEN, TRAVIS_PULL_REQUEST } = process.env;
+const { GITHUB_TOKEN, PR_NUMBER } = process.env;
 
 const hiddenDataMarker = 'botsData';
 
 console.log('size-report tokens', {
-  TRAVIS_TOKEN,
   GITHUB_TOKEN,
-  TRAVIS_PULL_REQUEST,
+  PR_NUMBER,
 });
 
 const globP = promisify(glob);
@@ -31,9 +28,6 @@ interface FileData {
   size: number;
   gzipSize: number;
 }
-
-const buildSizePrefix = '=== BUILD SIZES: ';
-const buildSizePrefixRe = new RegExp(`^${escapeRE(buildSizePrefix)}(.+)$`, 'm');
 
 const ascendingSizeSort = (a: any, b: any) => a.bytesDiff - b.bytesDiff;
 const descendingSizeSort = (a: any, b: any) => b.bytesDiff - a.bytesDiff;
@@ -154,49 +148,15 @@ function deleteCommentGitHub(params: any = {}) {
   });
 }
 
-function fetchTravis(
-  path: string,
-  searchParams: { [propName: string]: string } = {},
-): Promise<Response> {
-  const url = new URL(path, 'https://api.travis-ci.com');
-  url.search = new URLSearchParams(searchParams).toString();
-
-  return fetch(url.href, {
-    headers: {
-      'Travis-API-Version': '3',
-      Authorization: `token ${TRAVIS_TOKEN}`,
-    },
-  });
-}
-
-function fetchTravisBuildInfo(user: string, repo: string, branch: string) {
-  return fetchTravis(`/repo/${encodeURIComponent(`${user}/${repo}`)}/builds`, {
-    'branch.name': branch,
-    state: 'passed',
-    limit: '1',
-    event_type: 'push',
-  }).then(r => r.json());
-}
-
-function fetchTravisText(path: string): Promise<string> {
-  return fetchTravis(path).then(r => r.text());
-}
-
 /**
- * Scrape Travis for the previous build info.
+ * Get previous build info from HackerRank CDN.
  */
-async function getPreviousBuildInfo(
-  user: string,
-  repo: string,
-  branch: string,
-): Promise<FileData[] | undefined> {
-  const buildData = await fetchTravisBuildInfo(user, repo, branch);
-  const jobUrl = buildData.builds[0].jobs[0]['@href'];
-  const log = await fetchTravisText(jobUrl + '/log.txt');
-  const reResult = buildSizePrefixRe.exec(log);
-
-  if (!reResult) return;
-  return JSON.parse(reResult[1]);
+async function fetchPreviousBuildInfo(): Promise<FileData[] | undefined> {
+  const r = await fetch(
+    'https://gist.githubusercontent.com/itaditya/5e2f69caa8da407d77eb466d1e41f46a/raw/050cc5ab2d03905dd1951476ff81819354cef63b/stats.json',
+  );
+  const json = r.json();
+  return json;
 }
 
 interface BuildChanges {
@@ -401,20 +361,19 @@ export default async function sizeReport(
     filePaths.push(...matches);
   }
 
-  const pr = TRAVIS_PULL_REQUEST;
+  const pr = PR_NUMBER;
 
   const uniqueFilePaths = [...new Set(filePaths)];
 
   // Output the current build sizes for later retrieval.
   const buildInfo = await pathsToInfoArray(uniqueFilePaths);
-  console.log(buildSizePrefix + JSON.stringify(buildInfo));
 
   console.log('\nBuild change report sending to GitHub PR as comment:');
 
   let previousBuildInfo;
 
   try {
-    previousBuildInfo = await getPreviousBuildInfo(user, repo, branch);
+    previousBuildInfo = await fetchPreviousBuildInfo();
   } catch (err) {
     console.log(`  Couldn't parse previous build info`);
     return;
