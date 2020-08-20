@@ -267,6 +267,8 @@ async function sizeReport(user, repo, files, { branch = 'master', findRenamed } 
     const uniqueFilePaths = [...new Set(filePaths)];
     // Output the current build sizes for later retrieval.
     const buildInfo = await pathsToInfoArray(uniqueFilePaths);
+    console.log('=== Build Size ===');
+    console.log(buildInfo);
     console.log('\nBuild change report sending to GitHub PR as comment:');
     let previousBuildInfo;
     try {
@@ -282,12 +284,14 @@ async function sizeReport(user, repo, files, { branch = 'master', findRenamed } 
     }
     const buildChanges = await getChanges(previousBuildInfo, buildInfo, findRenamed);
     outputChanges(buildChanges);
+    ghMdOutput += `\n<details><summary>Minor Changes</summary>\n${ghMdCollapsedOutput}\n</details>`;
+    console.log('=== Changes ===');
+    console.log(ghMdOutput);
     const issueRes = await getGitHubIssue({ user, repo, pr });
     const issueData = await issueRes.json();
     const issueBody = issueData.body;
     const hiddenData = getHiddenData(issueBody);
     const { lastCommentId } = hiddenData.sizeReport;
-    ghMdOutput += `\n<details><summary>Minor Changes</summary>\n${ghMdCollapsedOutput}\n</details>`;
     const commentRes = await commentGitHub({ user, repo, pr }, ghMdOutput);
     const commentData = await commentRes.json();
     const commentId = commentData.id;
