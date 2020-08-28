@@ -3,46 +3,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const util_1 = require("util");
-const fs_1 = require("fs");
-const glob_1 = __importDefault(require("glob"));
-const gzip_size_1 = __importDefault(require("gzip-size"));
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const pretty_bytes_1 = __importDefault(require("pretty-bytes"));
 const find_renamed_1 = require("./find-renamed");
+const utils_1 = require("./utils");
 const { GITHUB_TOKEN, PR_NUMBER } = process.env;
 const hiddenDataMarker = 'botsData';
 console.log('size-report tokens', {
     GITHUB_TOKEN,
     PR_NUMBER,
 });
-const globP = util_1.promisify(glob_1.default);
-const statP = util_1.promisify(fs_1.stat);
 let ghMdOutput = '';
 let ghMdCollapsedOutput = '';
 const ascendingSizeSort = (a, b) => a.bytesDiff - b.bytesDiff;
 const descendingSizeSort = (a, b) => b.bytesDiff - a.bytesDiff;
-function escapeTilde(str) {
-    return str.replace(/\~/g, '\\~');
-}
-/**
- * Recursively-read a directory and turn it into an array of FileDatas
- */
-function pathsToInfoArray(paths) {
-    return Promise.all(paths.map(async (path) => {
-        const lastSlashIndex = path.lastIndexOf('/');
-        const lastHiphenIndex = path.lastIndexOf('-');
-        const name = escapeTilde(path.substring(lastSlashIndex + 1, lastHiphenIndex));
-        const gzipSizePromise = gzip_size_1.default.file(path);
-        const statSizePromise = statP(path).then(s => s.size);
-        return {
-            name,
-            path,
-            size: await statSizePromise,
-            gzipSize: await gzipSizePromise,
-        };
-    }));
-}
 function getHiddenData(str) {
     const markerIndex = str.indexOf(hiddenDataMarker);
     if (markerIndex === -1) {
@@ -257,16 +231,8 @@ async function sizeReport(user, repo, files, { branch = 'master', findRenamed } 
         files = [files];
     if (typeof findRenamed === 'string')
         findRenamed = find_renamed_1.buildFindRenamedFunc(findRenamed);
-    // Get target files
-    const filePaths = [];
-    for (const glob of files) {
-        const matches = await globP(glob, { nodir: true });
-        filePaths.push(...matches);
-    }
     const pr = PR_NUMBER;
-    const uniqueFilePaths = [...new Set(filePaths)];
-    // Output the current build sizes for later retrieval.
-    const buildInfo = await pathsToInfoArray(uniqueFilePaths);
+    const buildInfo = await utils_1.getBuildInfo(files);
     console.log('=== Build Size ===');
     console.log(buildInfo);
     console.log('\nBuild change report sending to GitHub PR as comment:');

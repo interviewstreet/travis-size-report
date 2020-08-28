@@ -1,11 +1,7 @@
-import { promisify } from 'util';
-import { stat } from 'fs';
-
-import glob from 'glob';
-import gzipSize from 'gzip-size';
 import fetch from 'node-fetch';
 import prettyBytes from 'pretty-bytes';
 import { buildFindRenamedFunc, FindRenamed } from './find-renamed';
+import { getBuildInfo, FileData } from './utils';
 
 const { GITHUB_TOKEN, PR_NUMBER } = process.env;
 
@@ -16,48 +12,11 @@ console.log('size-report tokens', {
   PR_NUMBER,
 });
 
-const globP = promisify(glob);
-const statP = promisify(stat);
-
 let ghMdOutput = '';
 let ghMdCollapsedOutput = '';
 
-interface FileData {
-  name: string;
-  path: string;
-  size: number;
-  gzipSize: number;
-}
-
 const ascendingSizeSort = (a: any, b: any) => a.bytesDiff - b.bytesDiff;
 const descendingSizeSort = (a: any, b: any) => b.bytesDiff - a.bytesDiff;
-
-function escapeTilde(str: string) {
-  return str.replace(/\~/g, '\\~');
-}
-
-/**
- * Recursively-read a directory and turn it into an array of FileDatas
- */
-function pathsToInfoArray(paths: string[]): Promise<FileData[]> {
-  return Promise.all(
-    paths.map(async path => {
-      const lastSlashIndex = path.lastIndexOf('/');
-      const lastHiphenIndex = path.lastIndexOf('-');
-
-      const name = escapeTilde(path.substring(lastSlashIndex + 1, lastHiphenIndex));
-      const gzipSizePromise = gzipSize.file(path);
-      const statSizePromise = statP(path).then(s => s.size);
-
-      return {
-        name,
-        path,
-        size: await statSizePromise,
-        gzipSize: await gzipSizePromise,
-      };
-    }),
-  );
-}
 
 function getHiddenData(str: string) {
   const markerIndex = str.indexOf(hiddenDataMarker);
@@ -353,20 +312,8 @@ export default async function sizeReport(
   if (typeof files === 'string') files = [files];
   if (typeof findRenamed === 'string') findRenamed = buildFindRenamedFunc(findRenamed);
 
-  // Get target files
-  const filePaths = [];
-
-  for (const glob of files) {
-    const matches = await globP(glob, { nodir: true });
-    filePaths.push(...matches);
-  }
-
   const pr = PR_NUMBER;
-
-  const uniqueFilePaths = [...new Set(filePaths)];
-
-  // Output the current build sizes for later retrieval.
-  const buildInfo = await pathsToInfoArray(uniqueFilePaths);
+  const buildInfo = await getBuildInfo(files);
   console.log('=== Build Size ===');
   console.log(buildInfo);
 

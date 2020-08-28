@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Configuration file for travis-size-report.
  * This is typically `sizereport.config.js`.
@@ -29,3 +28,4 @@ export interface Config {
      */
     findRenamed?: string | import('./find-renamed').FindRenamed;
 }
+export declare function getConfig(): Partial<Config>;

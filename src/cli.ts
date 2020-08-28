@@ -1,7 +1,5 @@
-#!/usr/bin/env node
 import path from 'path';
 import minimist from 'minimist';
-import sizeReport, { SizeReportOptions } from '.';
 
 const argv = minimist(process.argv.slice(2), {
   string: ['branch'],
@@ -45,28 +43,25 @@ export interface Config {
   findRenamed?: string | import('./find-renamed').FindRenamed;
 }
 
-let config: Partial<Config> = {};
+export function getConfig() {
+  let config: Partial<Config> = {};
 
-// Read arguments from config file
-if (configFile) {
-  config = require(path.join(
-    process.cwd(),
-    configFile === true ? 'sizereport.config.js' : configFile,
-  ));
+  // Read arguments from config file
+  if (configFile) {
+    config = require(path.join(
+      process.cwd(),
+      configFile === true ? 'sizereport.config.js' : configFile,
+    ));
+  }
+
+  // Override config file with command line arguments
+  if (repo) config.repo = repo;
+  if (glob) config.path = glob;
+  if (branch) config.branch = branch;
+
+  if (!config.repo) throw TypeError('No repo given');
+  if (!config.path) throw TypeError('No path given');
+  if (!config.repo.includes('/')) throw TypeError("Repo doesn't look like repo value");
+
+  return config;
 }
-
-// Override config file with command line arguments
-if (repo) config.repo = repo;
-if (glob) config.path = glob;
-if (branch) config.branch = branch;
-
-if (!config.repo) throw TypeError('No repo given');
-if (!config.path) throw TypeError('No path given');
-if (!config.repo.includes('/')) throw TypeError("Repo doesn't look like repo value");
-
-const [user, repoName] = config.repo.split('/');
-const opts: SizeReportOptions = {};
-if (config.branch) opts.branch = config.branch;
-if (config.findRenamed) opts.findRenamed = config.findRenamed;
-
-sizeReport(user, repoName, config.path, opts);
