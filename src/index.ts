@@ -110,9 +110,11 @@ function deleteCommentGitHub(params: any = {}) {
 /**
  * Get previous build info from HackerRank CDN.
  */
+
+// https://hrcdn.net/community-frontend/assets/buildsize.json
 async function fetchPreviousBuildInfo(): Promise<FileData[] | undefined> {
   const r = await fetch(
-    'https://gist.githubusercontent.com/itaditya/5e2f69caa8da407d77eb466d1e41f46a/raw/050cc5ab2d03905dd1951476ff81819354cef63b/stats.json',
+    'https://s3.amazonaws.com/hackerrank-private-cdn/community-frontend/assets/buildsize.json',
   );
   const json = r.json();
   return json;
