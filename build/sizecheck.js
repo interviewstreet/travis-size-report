@@ -9,9 +9,8 @@ const fs_1 = __importDefault(require("fs"));
 const cli_1 = require("./cli");
 const utils_1 = require("./utils");
 const config = cli_1.getConfig();
+console.log('config', config);
 const opts = {};
-if (config.branch)
-    opts.branch = config.branch;
 if (config.findRenamed)
     opts.findRenamed = config.findRenamed;
 let files = config.path;

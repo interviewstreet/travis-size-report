@@ -5,8 +5,8 @@ import { getConfig } from './cli';
 import { getBuildInfo } from './utils';
 
 const config = getConfig();
+console.log('config', config);
 const opts = {};
-if (config.branch) opts.branch = config.branch;
 if (config.findRenamed) opts.findRenamed = config.findRenamed;
 
 let files = config.path;
