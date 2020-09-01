@@ -5,17 +5,12 @@ import { getConfig } from './cli';
 import { getBuildInfo } from './utils';
 
 const config = getConfig();
-console.log('config', config);
-const opts = {};
-if (config.findRenamed) opts.findRenamed = config.findRenamed;
-
-let files = config.path;
-if (typeof files === 'string') files = [files];
+console.log('config1', config);
 
 async function init() {
   const dir = process.cwd();
-  const outputFilePath = path.join(dir, 'public', 'assets', 'buildsize.json');
-  const buildInfo = await getBuildInfo(files);
+  const outputFilePath = path.join(dir, config.buildSizePath, 'buildsize.json');
+  const buildInfo = await getBuildInfo(config.path);
   fs.writeFileSync(outputFilePath, JSON.stringify(buildInfo));
 }
 

@@ -7,10 +7,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const cli_1 = require("./cli");
 const _1 = __importDefault(require("."));
 const config = cli_1.getConfig();
+console.log('config2', config);
 const opts = {};
-if (config.branch)
-    opts.branch = config.branch;
 if (config.findRenamed)
     opts.findRenamed = config.findRenamed;
 const [user, repoName] = config.repo.split('/');
-_1.default(user, repoName, config.path, opts);
+_1.default(user, repoName, config.path, config.cdnUrl, opts);

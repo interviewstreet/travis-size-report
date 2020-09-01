@@ -2,12 +2,10 @@ import path from 'path';
 import minimist from 'minimist';
 
 const argv = minimist(process.argv.slice(2), {
-  string: ['branch'],
   alias: { c: 'config' },
 });
 
 // Read arguments from command line
-const branch = argv.branch as string;
 const configFile = argv.config as string | boolean;
 const repo = argv._[0] as string | undefined;
 const glob = argv._[1] as string | undefined;
@@ -29,13 +27,8 @@ export interface Config {
    * path: 'dist/*'
    */
   path: string | readonly string[];
-  /**
-   * The branch to check against.
-   * @default 'master'
-   * @example
-   * branch: 'develop'
-   */
-  branch?: string;
+  buildSizePath?: string;
+  cdnUrl: string;
   /**
    * By default, a renamed file will look like one file deleted and another created.
    * By writing a findRenamed callback, you can tell travis-size-report that a file was renamed.
@@ -57,11 +50,14 @@ export function getConfig() {
   // Override config file with command line arguments
   if (repo) config.repo = repo;
   if (glob) config.path = glob;
-  if (branch) config.branch = branch;
 
   if (!config.repo) throw TypeError('No repo given');
   if (!config.path) throw TypeError('No path given');
   if (!config.repo.includes('/')) throw TypeError("Repo doesn't look like repo value");
+
+  config.buildSizePath = config.buildSizePath || 'public/assets';
+
+  if (typeof config.path === 'string') config.path = [config.path];
 
   return config;
 }

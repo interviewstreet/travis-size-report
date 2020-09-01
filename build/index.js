@@ -89,9 +89,8 @@ function deleteCommentGitHub(params = {}) {
 /**
  * Get previous build info from HackerRank CDN.
  */
-// https://hrcdn.net/community-frontend/assets/buildsize.json
-async function fetchPreviousBuildInfo() {
-    const r = await node_fetch_1.default('https://s3.amazonaws.com/hackerrank-private-cdn/community-frontend/assets/buildsize.json');
+async function fetchPreviousBuildInfo(cdnUrl) {
+    const r = await node_fetch_1.default(`${cdnUrl}/buildsize.json`);
     const json = r.json();
     return json;
 }
@@ -227,9 +226,7 @@ function outputChanges(changes) {
         collapsedOutput(`| ${sizeDiff} | ${size} | ${changeEmoji} | ${name}`);
     }
 }
-async function sizeReport(user, repo, files, { branch = 'master', findRenamed } = {}) {
-    if (typeof files === 'string')
-        files = [files];
+async function sizeReport(user, repo, files, cdnUrl, { findRenamed } = {}) {
     if (typeof findRenamed === 'string')
         findRenamed = find_renamed_1.buildFindRenamedFunc(findRenamed);
     const pr = PR_NUMBER;
@@ -239,7 +236,7 @@ async function sizeReport(user, repo, files, { branch = 'master', findRenamed } 
     console.log('\nBuild change report sending to GitHub PR as comment:');
     let previousBuildInfo;
     try {
-        previousBuildInfo = await fetchPreviousBuildInfo();
+        previousBuildInfo = await fetchPreviousBuildInfo(cdnUrl);
     }
     catch (err) {
         console.log(`  Couldn't parse previous build info`);

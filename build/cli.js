@@ -6,11 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = __importDefault(require("path"));
 const minimist_1 = __importDefault(require("minimist"));
 const argv = minimist_1.default(process.argv.slice(2), {
-    string: ['branch'],
     alias: { c: 'config' },
 });
 // Read arguments from command line
-const branch = argv.branch;
 const configFile = argv.config;
 const repo = argv._[0];
 const glob = argv._[1];
@@ -25,14 +23,15 @@ function getConfig() {
         config.repo = repo;
     if (glob)
         config.path = glob;
-    if (branch)
-        config.branch = branch;
     if (!config.repo)
         throw TypeError('No repo given');
     if (!config.path)
         throw TypeError('No path given');
     if (!config.repo.includes('/'))
         throw TypeError("Repo doesn't look like repo value");
+    config.buildSizePath = config.buildSizePath || 'public/assets';
+    if (typeof config.path === 'string')
+        config.path = [config.path];
     return config;
 }
 exports.getConfig = getConfig;

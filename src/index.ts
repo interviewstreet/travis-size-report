@@ -111,11 +111,8 @@ function deleteCommentGitHub(params: any = {}) {
  * Get previous build info from HackerRank CDN.
  */
 
-// https://hrcdn.net/community-frontend/assets/buildsize.json
-async function fetchPreviousBuildInfo(): Promise<FileData[] | undefined> {
-  const r = await fetch(
-    'https://s3.amazonaws.com/hackerrank-private-cdn/community-frontend/assets/buildsize.json',
-  );
+async function fetchPreviousBuildInfo(cdnUrl: string): Promise<FileData[] | undefined> {
+  const r = await fetch(`${cdnUrl}/buildsize.json`);
   const json = r.json();
   return json;
 }
@@ -291,8 +288,6 @@ function outputChanges(changes: BuildChanges) {
 }
 
 export interface SizeReportOptions {
-  /** Branch to compare to. Defaults to 'master' */
-  branch?: string;
   /**
    * Join together a missing file and a new file which should be considered the same (as in,
    * renamed).
@@ -309,9 +304,9 @@ export default async function sizeReport(
   user: string,
   repo: string,
   files: string | readonly string[],
-  { branch = 'master', findRenamed }: SizeReportOptions = {},
+  cdnUrl: string,
+  { findRenamed }: SizeReportOptions = {},
 ): Promise<void> {
-  if (typeof files === 'string') files = [files];
   if (typeof findRenamed === 'string') findRenamed = buildFindRenamedFunc(findRenamed);
 
   const pr = PR_NUMBER;
@@ -324,7 +319,7 @@ export default async function sizeReport(
   let previousBuildInfo;
 
   try {
-    previousBuildInfo = await fetchPreviousBuildInfo();
+    previousBuildInfo = await fetchPreviousBuildInfo(cdnUrl);
   } catch (err) {
     console.log(`  Couldn't parse previous build info`);
     return;
