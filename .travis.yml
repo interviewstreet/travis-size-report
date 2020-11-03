@@ -1,4 +1,17 @@
-language: node_js
-cache: npm
-script: npm run build
-after_success: node build/bin.js --config
+branches:
+  - master
+jobs:
+  include:
+    - stage: deploy
+      node_js: 10
+      language: node_js
+      env: NAME="Travis Size Report"
+      cache:
+        yarn: true
+        directories:
+          - node_modules
+          - '$HOME/.npm'
+          - $HOME/.yarn-cache
+      script:
+        - yarn build
+        - yarn deploy
