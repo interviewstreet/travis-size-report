@@ -1157,7 +1157,7 @@
   resolved "https://nexus.hackerrank.com/repository/hr-npm-group/@types/unist/-/unist-2.0.3.tgz#9c088679876f374eb5983f150d4787aa6fb32d7e"
   integrity sha512-FvUupuM3rlRsRtCN+fDudtmytGO6iHJuuRKS1Ss0pG5z8oX0diNEw94UEL7hgDbpN94rgaK5R7sWm6RrSkZuAQ==
 
-"@types/vfile-message@*":
+"@types/vfile-message@*", "@types/vfile-message@^2.0.0":
   version "2.0.0"
   resolved "https://nexus.hackerrank.com/repository/hr-npm-group/@types/vfile-message/-/vfile-message-2.0.0.tgz#690e46af0fdfc1f9faae00cd049cc888957927d5"
   integrity sha512-GpTIuDpb9u4zIO165fUy9+fXcULdD8HFRNli04GehoMVbeNq7D6OBnqSmg3lxZnC+UvgUhEWKxdKiwYUkGltIw==
@@ -2445,9 +2445,9 @@ code-point-at@^1.0.0:
   resolved "https://nexus.hackerrank.com/repository/hr-npm-group/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
-"codemod-proptypes-to-flow@git://github.com/interviewstreet/codemod-proptypes-to-flow.git#v1.0.2":
+"codemod-proptypes-to-flow@git://github.com/interviewstreet/codemod-proptypes-to-flow#v1.0.2":
   version "1.0.2"
-  resolved "git://github.com/interviewstreet/codemod-proptypes-to-flow.git#dfcaf65ef7242856d1ef1bb399ce6cc45a82c69b"
+  resolved "git://github.com/interviewstreet/codemod-proptypes-to-flow#dfcaf65ef7242856d1ef1bb399ce6cc45a82c69b"
 
 collapse-white-space@^1.0.0, collapse-white-space@^1.0.2:
   version "1.0.6"
