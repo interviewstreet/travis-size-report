@@ -9,7 +9,6 @@ const fs_1 = __importDefault(require("fs"));
 const cli_1 = require("./cli");
 const utils_1 = require("./utils");
 const config = cli_1.getConfig();
-console.log('config1', config);
 async function init() {
     const dir = process.cwd();
     const outputFilePath = path_1.default.join(dir, config.buildSizePath, 'buildsize.json');

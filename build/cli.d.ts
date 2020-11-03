@@ -15,7 +15,7 @@ export interface Config {
      * path: 'dist/*'
      */
     path: string | readonly string[];
-    buildSizePath?: string;
+    buildSizePath: string;
     cdnUrl: string;
     /**
      * By default, a renamed file will look like one file deleted and another created.
@@ -23,4 +23,4 @@ export interface Config {
      */
     findRenamed?: string | import('./find-renamed').FindRenamed;
 }
-export declare function getConfig(): Partial<Config>;
+export declare function getConfig(): Config;

@@ -7,7 +7,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const cli_1 = require("./cli");
 const _1 = __importDefault(require("."));
 const config = cli_1.getConfig();
-console.log('config2', config);
 const opts = {};
 if (config.findRenamed)
     opts.findRenamed = config.findRenamed;

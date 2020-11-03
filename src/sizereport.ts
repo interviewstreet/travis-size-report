@@ -4,9 +4,8 @@ import { getConfig } from './cli';
 import sizeReport from '.';
 
 const config = getConfig();
-console.log('config2', config);
 
-const opts = {};
+const opts: any = {};
 if (config.findRenamed) opts.findRenamed = config.findRenamed;
 
 const [user, repoName] = config.repo.split('/');

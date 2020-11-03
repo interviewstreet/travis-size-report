@@ -5,7 +5,6 @@ import { getConfig } from './cli';
 import { getBuildInfo } from './utils';
 
 const config = getConfig();
-console.log('config1', config);
 
 async function init() {
   const dir = process.cwd();
