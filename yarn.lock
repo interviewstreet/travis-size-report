@@ -2436,9 +2436,9 @@ code-point-at@^1.0.0:
   resolved "https://nexus.hackerrank.com/repository/hr-npm-group/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
-"codemod-proptypes-to-flow@git://github.com/interviewstreet/codemod-proptypes-to-flow#v1.0.2":
+"codemod-proptypes-to-flow@git://github.com/interviewstreet/codemod-proptypes-to-flow.git#v1.0.2":
   version "1.0.2"
-  resolved "git://github.com/interviewstreet/codemod-proptypes-to-flow#dfcaf65ef7242856d1ef1bb399ce6cc45a82c69b"
+  resolved "git://github.com/interviewstreet/codemod-proptypes-to-flow.git#dfcaf65ef7242856d1ef1bb399ce6cc45a82c69b"
 
 collapse-white-space@^1.0.0, collapse-white-space@^1.0.2:
   version "1.0.6"
@@ -4947,10 +4947,10 @@ hosted-git-info@^2.1.4:
   resolved "https://nexus.hackerrank.com/repository/hr-npm-group/hosted-git-info/-/hosted-git-info-2.8.8.tgz#7539bd4bc1e0e0a895815a2e0262420b12858488"
   integrity sha512-f/wzC2QaWBs7t9IYqB4T3sR1xviIViXJRJTWBlx2Gf3g0Xi5vI7Yy4koXQ1c9OYDGHN9sBy1DQ2AB8fqZBWhUg==
 
-hr-scripts@^4.9.0-alpha:
-  version "4.9.0-alpha"
-  resolved "https://nexus.hackerrank.com/repository/hr-npm-group/hr-scripts/-/hr-scripts-4.9.0-alpha.tgz#a381e4a1265152c6e9c9548aeddbe2633e7d86c5"
-  integrity sha512-06zs4qGEJXdg1Ez3x50lEkWzFnBnESGVf26SH9faj829p0tF0R99aCpr3AjRIBL3bw7HJ7lfn+XqS/sHGHcqbg==
+hr-scripts@4.8.0:
+  version "4.8.0"
+  resolved "https://nexus.hackerrank.com/repository/hr-npm-group/hr-scripts/-/hr-scripts-4.8.0.tgz#4093618cd24e31ddd43597e3cacacee88fc9f05c"
+  integrity sha512-2qcpa30ytwLZJWDDN2JFmDIoArry+oK0wVgcKEXoM8da1Sm6KDeL2IY1hiyy/Fsl5K/WhvkoJviEVAExEo7XDg==
   dependencies:
     autoprefixer "9.6.0"
     babel-eslint "10.0.1"
