@@ -14,4 +14,4 @@ jobs:
           - $HOME/.yarn-cache
       script:
         - yarn build
-        - yarn deploy
+        # - yarn deploy

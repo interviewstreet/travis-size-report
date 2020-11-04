@@ -18,7 +18,7 @@ jobs:
           node-version: '10.x'
       - run: yarn install --frozen-lockfile
       - run: yarn build
-        # - run: yarn deploy
+      - run: yarn deploy
         env:
           TRAVIS_PULL_REQUEST: 'true'
           NEXUS_PUBLISH_TOKEN: ${{ secrets.NEXUS_PUBLISH_TOKEN }}
