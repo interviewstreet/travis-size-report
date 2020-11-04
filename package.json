@@ -56,5 +56,8 @@
   ],
   "publishConfig": {
     "registry": "https://nexus.hackerrank.com/repository/hr-npm-hosted/"
+  },
+  "resolutions": {
+    "remark": "11.0.2"
   }
 }
